@@ -1,8 +1,8 @@
 # Ejecuta el proyecto:
-npm i
-npx prisma db push --force-reset
-npx prisma db push
-npm run dev
+- npm i
+- npx prisma db push --force-reset
+- npx prisma db push
+- npm run dev
 
 /**
    * ENDPOINT 1: REGISTRO
