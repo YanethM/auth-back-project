@@ -14,86 +14,33 @@ datasource db {
 }
 
 model Users {
-  id                      String       @id @default(auto()) @map("_id") @db.ObjectId
-  email                   String       @unique
+  id                      String     @id @default(auto()) @map("_id") @db.ObjectId
+  email                   String     @unique
   current_password        String
   fullname                String
-  role                    Role         @default(PACIENTE)
+  role                    Role       @default(PACIENTE)
   specialty               String? // Solo para médicos
-  status                  UserStatus   @default(PENDING)
+  status                  UserStatus @default(PENDING)
   verificationCode        String?
   verificationCodeExpires DateTime?
-  createdAt               DateTime     @default(now())
-  updatedAt               DateTime     @updatedAt
+  createdAt               DateTime   @default(now())
+  updatedAt               DateTime   @updatedAt
   patient                 Patient?
-  diagnosticsCreated      Diagnostic[] @relation("DoctorDiagnostics")
 }
 
 model Patient {
-  id             String       @id @default(auto()) @map("_id") @db.ObjectId
-  userId         String       @unique @db.ObjectId
-  documentNumber String       @unique
+  id             String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId         String   @unique @db.ObjectId
+  documentNumber String   @unique
   birthDate      DateTime
   age            Int
   gender         String
   phone          String?
   address        String?
-  state          State        @default(ACTIVE)
-  createdAt      DateTime     @default(now())
-  updatedAt      DateTime     @updatedAt
-  user           Users        @relation(fields: [userId], references: [id], onDelete: Cascade)
-  diagnostics    Diagnostic[]
-}
-
-model Diagnostic {
-  id              String          @id @default(auto()) @map("_id") @db.ObjectId
-  patientId       String          @db.ObjectId
-  doctorId        String          @db.ObjectId
-  title           String
-  description     String
-  symptoms        String
-  diagnosis       String
-  treatment       String
-  observations    String?
-  diagnosticDate  DateTime        @default(now())
-  nextAppointment DateTime?
-  state           DiagnosticState @default(ACTIVE)
-  createdAt       DateTime        @default(now())
-  updatedAt       DateTime        @updatedAt
-
-  // Relaciones
-  patient   Patient              @relation(fields: [patientId], references: [id], onDelete: Cascade)
-  doctor    Users                @relation("DoctorDiagnostics", fields: [doctorId], references: [id])
-  documents DiagnosticDocument[]
-
-  @@index([patientId])
-  @@index([doctorId])
-}
-
-model DiagnosticDocument {
-  id             String   @id @default(auto()) @map("_id") @db.ObjectId
-  diagnosticId   String   @db.ObjectId
-  filename       String // Nombre original
-  storedFilename String // Nombre en servidor
-  filePath       String // Ruta completa
-  fileType       String // pdf, jpg, png, etc
-  mimeType       String // application/pdf, image/jpeg
-  fileSize       Int // Tamaño en bytes
-  description    String?
-  uploadedBy     String   @db.ObjectId
+  state          State    @default(ACTIVE)
   createdAt      DateTime @default(now())
-
-  // Relaciones
-  diagnostic Diagnostic @relation(fields: [diagnosticId], references: [id], onDelete: Cascade)
-
-  @@index([diagnosticId])
-}
-
-enum Role {
-  ENFERMERO
-  MEDICO
-  ADMINISTRADOR
-  PACIENTE
+  updatedAt      DateTime @updatedAt
+  user           Users    @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 enum UserStatus {
@@ -107,8 +54,8 @@ enum State {
   INACTIVE
 }
 
-enum DiagnosticState {
-  ACTIVE
-  ARCHIVED
-  DELETED
+enum Role {
+  ADMIN
+  MEDICO
+  PACIENTE
 }

@@ -181,6 +181,7 @@ const resendVerificationCode = async (req, res) => {
 const signin = async (req, res) => {
   try {
     let { email, password } = req.body;
+console.log(email, password);
 
     // Validar campos requeridos
     if (!email || !password) {
